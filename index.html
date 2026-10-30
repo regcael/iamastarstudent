@@ -1064,6 +1064,7 @@
 </body>
 </html>
 
+    
     function checkExistingSprint(uid) {
       const savedStart = localStorage.getItem('rc_sprint_start_' + uid);
       if (savedStart) {
@@ -1090,10 +1091,12 @@
           if (timerInterval) clearInterval(timerInterval);
           timerInterval = setInterval(checkHourglassProgress, 1000);
         } else {
-          // Sprint finished while away
           localStorage.removeItem('rc_sprint_start_' + uid);
           localStorage.removeItem('rc_sprint_subj_' + uid);
           localStorage.removeItem('rc_sprint_act_' + uid);
         }
       }
     }
+  </script>
+</body>
+</html>
