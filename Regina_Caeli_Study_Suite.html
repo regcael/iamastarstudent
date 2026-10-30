@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leah | CS Executive Study & Progress Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #fdfafb;
+      color: #334155;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow-x: hidden;
+    }
+    .font-serif-brand {
+      font-family: 'Playfair Display', serif;
+    }
+    .rc-watermark-layer {
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      pointer-events: none;
+      z-index: 40;
+      background-image: url("data:image/svg+xml,%3Csvg width='420' height='240' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='rotate(-24 210 120)'%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' fill='%23f472b6' fill-opacity='0.04' font-family='Georgia, serif' font-weight='bold' font-size='20' letter-spacing='4'%3ELEAH • PERSONAL SUITE%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' fill='%23f472b6' fill-opacity='0.03' font-family='sans-serif' font-weight='700' font-size='12' letter-spacing='3'%3EEXECUTIVE FOCUS%3C/text%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+    @keyframes floatUpAndFade {
+      0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+      15% { opacity: 1; transform: translateY(-15px) scale(1.1); }
+      75% { opacity: 1; transform: translateY(-35px) scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+    }
+    .animate-float-xp {
+      animation: floatUpAndFade 2.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative text-sm">
+
+  <div class="rc-watermark-layer" id="watermarkLayer"></div>
+
+  <div id="actionToast" class="fixed bottom-5 right-5 z-50 hidden bg-white text-slate-700 px-5 py-3.5 rounded-2xl shadow-xl border border-rose-100 text-xs font-bold flex items-center gap-3 z-50">
+    <span class="text-base">✨</span>
+    <span id="actionToastMsg">Action Logged.</span>
+  </div>
+
+  <main class="max-w-3xl mx-auto w-full px-4 pt-8 pb-14 relative z-10">
+
+    <div class="mb-4 px-2 flex items-center justify-between">
+      <div>
+        <span class="text-xs font-extrabold uppercase tracking-widest bg-fuchsia-50 text-fuchsia-600 px-3 py-1 rounded-full border border-fuchsia-200">
+          CS Executive Group 1
+        </span>
+        <h1 class="text-2xl font-extrabold text-slate-800 mt-1">
+          Study & Focus Tracker <span class="font-serif-brand italic font-normal text-slate-400 text-lg">✨</span>
+        </h1>
+      </div>
+      <!-- XP COUNTER -->
+      <div id="stickyXpBadge" class="bg-white border border-rose-200 text-rose-500 font-extrabold px-4 py-2 rounded-2xl text-sm shadow-sm flex items-center gap-1.5 transition-all duration-300">
+        ⭐ <span id="stickyXpText">0 XP</span>
+      </div>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="flex gap-2 mb-6 bg-white p-1.5 rounded-2xl border border-rose-100 shadow-sm">
+      <button onclick="switchTab('tracker')" id="tabTrackerBtn" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition bg-rose-400 text-white shadow-sm">
+        🎯 Active Tracker
+      </button>
+      <button onclick="switchTab('report')" id="tabReportBtn" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-50">
+        📊 Progress & Trends
+      </button>
+    </div>
+
+    <!-- TAB 1: ACTIVE TRACKER -->
+    <div id="tabTrackerContent" class="space-y-6">
+
+      <!-- HABITS & PREP XP BAR -->
+      <section class="bg-white rounded-3xl p-5 shadow-sm border border-rose-100">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-3">Daily Prep & Habit Check-ins</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button onclick="logHabitXP('Water Bottle Filled', 10, '💧 Water bottle filled')" class="bg-rose-50/60 hover:bg-rose-100/60 border border-rose-200 p-3 rounded-2xl text-left transition flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-700">Water Bottle Filled</p>
+              <p class="text-[11px] text-rose-500 font-extrabold mt-0.5">+10 XP</p>
+            </div>
+            <span class="text-lg">💧</span>
+          </button>
+          <button onclick="logHabitXP('Get Desk Ready', 10, '🗂️ Desk prepared')" class="bg-amber-50/60 hover:bg-amber-100/60 border border-amber-200 p-3 rounded-2xl text-left transition flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-700">Get Desk Ready</p>
+              <p class="text-[11px] text-amber-600 font-extrabold mt-0.5">+10 XP</p>
+            </div>
+            <span class="text-lg">🗂️</span>
+          </button>
+          <button onclick="logHabitXP('Put Everything Back', 10, '📦 Put everything back')" class="bg-emerald-50/60 hover:bg-emerald-100/60 border border-emerald-200 p-3 rounded-2xl text-left transition flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-700">Put Everything Back</p>
+              <p class="text-[11px] text-emerald-600 font-extrabold mt-0.5">+10 XP</p>
+            </div>
+            <span class="text-lg">📦</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- PAPER SELECTOR -->
+      <section class="bg-white rounded-3xl p-5 shadow-sm border border-rose-100">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-3">1. Select Subject Paper</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+          <button onclick="selectPaper('Corporate Accounting')" id="paper-Corporate Accounting" class="paper-btn bg-rose-50 text-slate-700 font-bold text-xs p-3 rounded-xl border border-rose-200 transition text-center truncate">
+            Corporate Accounting
+          </button>
+          <button onclick="selectPaper('Company Law')" id="paper-Company Law" class="paper-btn bg-white text-slate-600 hover:bg-slate-50 font-bold text-xs p-3 rounded-xl border border-slate-200 transition text-center truncate">
+            Company Law
+          </button>
+          <button onclick="selectPaper('Financial Management')" id="paper-Financial Management" class="paper-btn bg-white text-slate-600 hover:bg-slate-50 font-bold text-xs p-3 rounded-xl border border-slate-200 transition text-center truncate">
+            Financial Management
+          </button>
+          <button onclick="selectPaper('JIGL')" id="paper-JIGL" class="paper-btn bg-white text-slate-600 hover:bg-slate-50 font-bold text-xs p-3 rounded-xl border border-slate-200 transition text-center truncate">
+            JIGL
+          </button>
+        </div>
+        <input id="customPaperInput" type="text" oninput="selectCustomPaper(this.value)" placeholder="Or type custom paper / subject..." 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-700 focus:outline-none focus:border-rose-300 font-medium">
+      </section>
+
+      <!-- ACTIVITY KEY SELECTOR WITH SPECIFIC XP VALUES -->
+      <section>
+        <div class="flex items-center justify-between mb-2.5">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">2. Select Activity Key Focus (15-Min Sprint)</h3>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button onclick="selectActivity('Reading', 20)" id="act-Reading" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border-2 border-emerald-300 shadow-sm transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 font-extrabold flex items-center justify-center text-xs">R</span>
+              <span class="text-[11px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+20 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Reading</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">ICSI, Study Guide, PYQ</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Lecture', 30)" id="act-Lecture" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 font-extrabold flex items-center justify-center text-xs">L</span>
+              <span class="text-[11px] font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">+30 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Lecture</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">YouTube / Class recording</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Problem Solving', 30)" id="act-Problem Solving" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 font-extrabold flex items-center justify-center text-xs">P</span>
+              <span class="text-[11px] font-extrabold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">+30 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Problem Solving</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Sums, practice, PYQs</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Notes', 20)" id="act-Notes" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-fuchsia-100 text-fuchsia-700 font-extrabold flex items-center justify-center text-xs">N</span>
+              <span class="text-[11px] font-extrabold text-fuchsia-600 bg-fuchsia-50 px-2 py-0.5 rounded-full">+20 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Notes</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Making notes & formulas</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Testing', 10)" id="act-Testing" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-xs">T</span>
+              <span class="text-[11px] font-extrabold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">+10 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Testing</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Self-test, error analysis</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Revision', 10)" id="act-Revision" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-700 font-extrabold flex items-center justify-center text-xs">Rv</span>
+              <span class="text-[11px] font-extrabold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">+10 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Revision</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Quick review, flashcards</span>
+            </div>
+          </button>
+
+          <button onclick="selectActivity('Custom Study Sprint', 20)" id="act-Custom Study Sprint" class="act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between col-span-2">
+            <div class="flex justify-between items-start mb-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-xs">C</span>
+              <span class="text-[11px] font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">+20 XP</span>
+            </div>
+            <div>
+              <span class="block text-sm font-bold text-slate-800">Custom Study Sprint</span>
+              <span class="block text-[11px] font-normal text-slate-500 mt-0.5">Any other study-related task</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- SPRINT EXECUTION CARD -->
+      <section class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100 relative overflow-hidden">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span id="sprintBadge" class="text-xs font-bold bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full border border-rose-200">
+            ⏱️ 15-Minute Focus Sprint
+          </span>
+          <button onclick="logStartStudyingXP()" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+            🚀 Start Studying (+50 XP)
+          </button>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 text-center">
+          <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">Active Target</p>
+          <h3 id="activeTargetDisplay" class="text-lg sm:text-xl font-extrabold text-slate-800">
+            Corporate Accounting — Reading (15 Mins)
+          </h3>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <button onclick="completeActiveSprint()" class="w-full bg-rose-400 hover:bg-rose-500 text-white font-bold py-4 px-5 rounded-xl shadow-sm transition flex items-center justify-center gap-2 text-sm relative active:scale-[0.98]">
+            <span id="completeBtnText">✅ Complete Sprint (+20 XP)</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TAB 2: PROGRESS & TRENDS REPORT -->
+    <div id="tabReportContent" class="space-y-6 hidden">
+
+      <!-- REPORT CONTROLS / FILTERS -->
+      <section class="bg-white rounded-3xl p-5 shadow-sm border border-rose-100 space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">📊 Progress & Trends Analytics</h3>
+          
+          <!-- Period Selector -->
+          <div class="flex bg-slate-50 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+            <button onclick="setReportPeriod('week')" id="periodWeek" class="px-3 py-1.5 rounded-lg transition bg-white text-slate-800 shadow-sm">This Week</button>
+            <button onclick="setReportPeriod('month')" id="periodMonth" class="px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-800">This Month</button>
+            <button onclick="setReportPeriod('custom')" id="periodCustom" class="px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-800">Custom Range</button>
+          </div>
+        </div>
+
+        <!-- Custom Date Range Picker (shown if custom selected) -->
+        <div id="customDateBox" class="hidden grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-xs">
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Start Date</label>
+            <input type="date" id="customStartDate" onchange="renderReport()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700">
+          </div>
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">End Date</label>
+            <input type="date" id="customEndDate" onchange="renderReport()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700">
+          </div>
+        </div>
+
+        <!-- Filters Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-xs">
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Filter by Subject Paper</label>
+            <select id="filterPaper" onchange="renderReport()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 font-medium focus:outline-none focus:border-rose-300">
+              <option value="ALL">All Papers / Subjects</option>
+              <option value="Corporate Accounting">Corporate Accounting</option>
+              <option value="Company Law">Company Law</option>
+              <option value="Financial Management">Financial Management</option>
+              <option value="JIGL">JIGL</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-500 font-bold mb-1">Filter by Activity Key</label>
+            <select id="filterActivity" onchange="renderReport()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 font-medium focus:outline-none focus:border-rose-300">
+              <option value="ALL">All Activity Types</option>
+              <option value="Reading">Reading</option>
+              <option value="Lecture">Lecture</option>
+              <option value="Problem Solving">Problem Solving</option>
+              <option value="Notes">Notes</option>
+              <option value="Testing">Testing</option>
+              <option value="Revision">Revision</option>
+              <option value="Custom Study Sprint">Custom Study Sprint</option>
+              <option value="Habit / Prep">Habit / Prep Check-ins</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- METRICS SUMMARY CARDS -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-sm text-center">
+          <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total XP Earned</p>
+          <p id="repTotalXp" class="text-xl font-extrabold text-rose-500 mt-1">0 XP</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-sm text-center">
+          <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Study Sprints</p>
+          <p id="repTotalSprints" class="text-xl font-extrabold text-slate-800 mt-1">0</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-sm text-center">
+          <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Hours Invested</p>
+          <p id="repTotalHours" class="text-xl font-extrabold text-indigo-600 mt-1">0.0h</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-sm text-center">
+          <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Habits Logged</p>
+          <p id="repTotalHabits" class="text-xl font-extrabold text-emerald-600 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- TRENDS CHART (VISUAL BREAKDOWN) -->
+      <section class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-4">📈 Subject Breakdown & Trends</h3>
+        <div id="trendsChartContainer" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- DETAILED ACTIVITY LOG TABLE -->
+      <section class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">📜 Activity Log History</h3>
+          <button onclick="clearLogs()" class="text-[11px] text-rose-400 hover:text-rose-600 font-bold">Clear History</button>
+        </div>
+        <div class="overflow-x-auto max-h-72 overflow-y-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 uppercase font-extrabold sticky top-0">
+              <tr>
+                <th class="p-2.5">Date / Time</th>
+                <th class="p-2.5">Subject / Paper</th>
+                <th class="p-2.5">Activity</th>
+                <th class="p-2.5 text-right">XP</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody" class="divide-y divide-slate-100">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="mt-8 pt-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-slate-400 font-medium">
+      <div class="flex items-center gap-2">
+        <span class="font-serif-brand font-bold text-slate-500 text-sm">Regina Caeli</span>
+        <span>•</span>
+        <span>Leah's CS Executive Study Space</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    function safeGetStorage(key, defaultVal) {
+      try { return localStorage.getItem(key) || defaultVal; } catch (e) { return defaultVal; }
+    }
+    function safeSetStorage(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    }
+
+    function showActionToast(msg) {
+      const toast = document.getElementById('actionToast');
+      document.getElementById('actionToastMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
+    }
+
+    let xp = parseInt(safeGetStorage('rc_xp_cs', '0'), 10);
+    let logs = JSON.parse(safeGetStorage('rc_logs_cs', '[]'));
+    let currentPaper = 'Corporate Accounting';
+    let currentActivity = 'Reading';
+    let currentActivityXp = 20;
+    let reportPeriod = 'week';
+
+    function updateStatsUI() {
+      document.getElementById('stickyXpText').textContent = `${xp} XP`;
+      safeSetStorage('rc_xp_cs', xp);
+      safeSetStorage('rc_logs_cs', JSON.stringify(logs));
+    }
+
+    function playChime(freq = 528, duration = 0.15) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function spawnFloatingXP(amount, textPrefix = '🎉 +') {
+      const badge = document.getElementById('stickyXpBadge');
+      const rect = badge.getBoundingClientRect();
+      const floater = document.createElement('div');
+      floater.innerHTML = `${textPrefix}${amount} XP`;
+      floater.className = 'fixed font-extrabold text-rose-500 text-lg z-[100] pointer-events-none drop-shadow-md animate-float-xp';
+      floater.style.left = (rect.left + rect.width / 2 - 30) + 'px';
+      floater.style.top = (rect.top - 10) + 'px';
+      document.body.appendChild(floater);
+      setTimeout(() => floater.remove(), 2500);
+
+      badge.classList.add('scale-110', 'bg-rose-50', 'border-rose-300');
+      setTimeout(() => badge.classList.remove('scale-110', 'bg-rose-50', 'border-rose-300'), 300);
+    }
+
+    function addLogEntry(paper, activity, xpVal) {
+      const entry = {
+        timestamp: new Date().toISOString(),
+        paper: paper,
+        activity: activity,
+        xp: xpVal
+      };
+      logs.unshift(entry);
+      updateStatsUI();
+    }
+
+    function logHabitXP(habitName, amount, msg) {
+      xp += amount;
+      addLogEntry(habitName, 'Habit / Prep', amount);
+      playChime(640, 0.15);
+      showActionToast(`✨ ${msg}! +${amount} XP`);
+      spawnFloatingXP(amount);
+    }
+
+    function logStartStudyingXP() {
+      xp += 50;
+      addLogEntry('Study Session', 'Habit / Prep', 50);
+      playChime(720, 0.2);
+      showActionToast('🚀 Started studying! +50 XP');
+      spawnFloatingXP(50);
+    }
+
+    function selectPaper(paper) {
+      currentPaper = paper;
+      document.getElementById('customPaperInput').value = '';
+      ['Corporate Accounting', 'Company Law', 'Financial Management', 'JIGL'].forEach(p => {
+        const btn = document.getElementById('paper-' + p);
+        if (p === paper) {
+          btn.className = 'paper-btn bg-rose-50 text-slate-700 font-bold text-xs p-3 rounded-xl border-2 border-rose-300 transition text-center truncate';
+        } else {
+          btn.className = 'paper-btn bg-white text-slate-600 hover:bg-slate-50 font-bold text-xs p-3 rounded-xl border border-slate-200 transition text-center truncate';
+        }
+      });
+      updateActiveTargetDisplay();
+    }
+
+    function selectCustomPaper(val) {
+      if (val.trim() !== '') {
+        currentPaper = val;
+        ['Corporate Accounting', 'Company Law', 'Financial Management', 'JIGL'].forEach(p => {
+          document.getElementById('paper-' + p).className = 'paper-btn bg-white text-slate-600 hover:bg-slate-50 font-bold text-xs p-3 rounded-xl border border-slate-200 transition text-center truncate';
+        });
+        updateActiveTargetDisplay();
+      }
+    }
+
+    function selectActivity(activity, xpValue) {
+      currentActivity = activity;
+      currentActivityXp = xpValue;
+      
+      const activities = ['Reading', 'Lecture', 'Problem Solving', 'Notes', 'Testing', 'Revision', 'Custom Study Sprint'];
+      activities.forEach(a => {
+        const btn = document.getElementById('act-' + a);
+        if (a === activity) {
+          btn.className = `act-btn bg-white text-slate-700 font-bold text-xs p-4 rounded-2xl border-2 border-rose-300 shadow-sm transition text-left flex flex-col justify-between ${a === 'Custom Study Sprint' ? 'col-span-2' : ''}`;
+        } else {
+          btn.className = `act-btn bg-white text-slate-700 hover:bg-slate-50 font-bold text-xs p-4 rounded-2xl border border-slate-200 transition text-left flex flex-col justify-between opacity-90 hover:opacity-100 ${a === 'Custom Study Sprint' ? 'col-span-2' : ''}`;
+        }
+      });
+
+      document.getElementById('completeBtnText').textContent = `✅ Complete Sprint (+${xpValue} XP)`;
+      updateActiveTargetDisplay();
+    }
+
+    function updateActiveTargetDisplay() {
+      document.getElementById('activeTargetDisplay').textContent = `${currentPaper} — ${currentActivity} (15 Mins)`;
+    }
+
+    function completeActiveSprint() {
+      xp += currentActivityXp;
+      addLogEntry(currentPaper, currentActivity, currentActivityXp);
+      playChime(784, 0.25);
+      showActionToast(`✨ Completed ${currentActivity} session! +${currentActivityXp} XP`);
+      spawnFloatingXP(currentActivityXp);
+    }
+
+    function switchTab(tab) {
+      const trackerTab = document.getElementById('tabTrackerContent');
+      const reportTab = document.getElementById('tabReportContent');
+      const trackerBtn = document.getElementById('tabTrackerBtn');
+      const reportBtn = document.getElementById('tabReportBtn');
+
+      if (tab === 'tracker') {
+        trackerTab.classList.remove('hidden');
+        reportTab.classList.add('hidden');
+        trackerBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition bg-rose-400 text-white shadow-sm';
+        reportBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-50';
+      } else {
+        trackerTab.classList.add('hidden');
+        reportTab.classList.remove('hidden');
+        reportBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition bg-rose-400 text-white shadow-sm';
+        trackerBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition text-slate-600 hover:bg-slate-50';
+        renderReport();
+      }
+    }
+
+    function setReportPeriod(period) {
+      reportPeriod = period;
+      ['week', 'month', 'custom'].forEach(p => {
+        const btn = document.getElementById('period' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (p === period) {
+          btn.className = 'px-3 py-1.5 rounded-lg transition bg-white text-slate-800 shadow-sm';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-800';
+        }
+      });
+      const customBox = document.getElementById('customDateBox');
+      if (period === 'custom') {
+        customBox.classList.remove('hidden');
+      } else {
+        customBox.classList.add('hidden');
+      }
+      renderReport();
+    }
+
+    function renderReport() {
+      const filterPaper = document.getElementById('filterPaper').value;
+      const filterActivity = document.getElementById('filterActivity').value;
+      const startDateVal = document.getElementById('customStartDate').value;
+      const endDateVal = document.getElementById('customEndDate').value;
+
+      const now = new Date();
+      let filtered = logs.filter(item => {
+        const itemDate = new Date(item.timestamp);
+        
+        // Period filter
+        if (reportPeriod === 'week') {
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(now.getDate() - 7);
+          if (itemDate < oneWeekAgo) return false;
+        } else if (reportPeriod === 'month') {
+          if (itemDate.getMonth() !== now.getMonth() || itemDate.getFullYear() !== now.getFullYear()) return false;
+        } else if (reportPeriod === 'custom' && startDateVal && endDateVal) {
+          const start = new Date(startDateVal);
+          const end = new Date(endDateVal);
+          end.setHours(23, 59, 59);
+          if (itemDate < start || itemDate > end) return false;
+        }
+
+        // Subject Paper filter
+        if (filterPaper !== 'ALL' && item.paper !== filterPaper) return false;
+
+        // Activity filter
+        if (filterActivity !== 'ALL') {
+          if (filterActivity === 'Habit / Prep' && item.activity !== 'Habit / Prep') return false;
+          if (filterActivity !== 'Habit / Prep' && item.activity !== filterActivity) return false;
+        }
+
+        return true;
+      });
+
+      // Calculate Summary Metrics
+      const totalXp = filtered.reduce((acc, curr) => acc + curr.xp, 0);
+      const sprints = filtered.filter(item => item.activity !== 'Habit / Prep');
+      const habits = filtered.filter(item => item.activity === 'Habit / Prep');
+      const totalHours = (sprints.length * 15) / 60; // Each sprint is 15 mins
+
+      document.getElementById('repTotalXp').textContent = `${totalXp} XP`;
+      document.getElementById('repTotalSprints').textContent = sprints.length;
+      document.getElementById('repTotalHours').textContent = `${totalHours.toFixed(1)}h`;
+      document.getElementById('repTotalHabits').textContent = habits.length;
+
+      // Render Trends Chart (Subject Breakdown)
+      const chartContainer = document.getElementById('trendsChartContainer');
+      chartContainer.innerHTML = '';
+
+      const paperXpMap = {};
+      filtered.forEach(item => {
+        const p = item.paper || 'Other';
+        paperXpMap[p] = (paperXpMap[p] || 0) + item.xp;
+      });
+
+      const maxPaperXp = Math.max(...Object.values(paperXpMap), 1);
+
+      if (Object.keys(paperXpMap).length === 0) {
+        chartContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No data logged for this period/filter.</p>';
+      } else {
+        for (const [paper, xpVal] of Object.entries(paperXpMap)) {
+          const pct = Math.round((xpVal / maxPaperXp) * 100);
+          const row = document.createElement('div');
+          row.className = 'space-y-1';
+          row.innerHTML = `
+            <div class="flex justify-between text-xs font-bold text-slate-700">
+              <span>${paper}</span>
+              <span class="text-rose-500">${xpVal} XP</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-rose-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+          `;
+          chartContainer.appendChild(row);
+        }
+      }
+
+      // Render Table Logs
+      const tbody = document.getElementById('logTableBody');
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">No activity logs found.</td></tr>';
+      } else {
+        filtered.forEach(item => {
+          const d = new Date(item.timestamp);
+          const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition';
+          tr.innerHTML = `
+            <td class="p-2.5 text-slate-500">${dateStr}</td>
+            <td class="p-2.5 font-bold text-slate-800">${item.paper}</td>
+            <td class="p-2.5"><span class="bg-rose-50 text-rose-600 px-2 py-0.5 rounded-md font-semibold text-[11px]">${item.activity}</span></td>
+            <td class="p-2.5 text-right font-extrabold text-rose-500">+${item.xp} XP</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    function clearLogs() {
+      if (confirm('Are you sure you want to clear your study history logs?')) {
+        logs = [];
+        updateStatsUI();
+        renderReport();
+        showActionToast('🗑️ History logs cleared.');
+      }
+    }
+
+    updateStatsUI();
+  </script>
+</body>
+</html>
